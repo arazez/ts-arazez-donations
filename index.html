@@ -21,8 +21,9 @@
 
 <style>
   /* ======================================================================
-     EDITABLE CONFIG — CSS-side values (colours, goal display, donor list)
+     EDITABLE CONFIG — CSS-side values (colours, donor list)
      For the donation-window logic and links, see the JS CONFIG block below.
+     The donation goal/raised total live in donations.json, not here.
      ====================================================================== */
   :root {
     --bg: #0e0f12;
@@ -139,6 +140,13 @@
 
   .banner.open .banner-title { color: var(--green); }
 
+  .banner.goal {
+    border-color: #ffd166;
+    background: #ffd16614;
+  }
+
+  .banner.goal .banner-title { color: #ffd166; }
+
   .countdown {
     font-variant-numeric: tabular-nums;
     font-size: 0.95rem;
@@ -214,17 +222,42 @@
     padding: 1.5rem;
   }
 
-  .goal-line {
+  .progress-wrap {
+    margin-bottom: 1.1rem;
+  }
+
+  .progress-label {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
     font-weight: 600;
     flex-wrap: wrap;
     gap: 0.3rem;
   }
 
-  .goal-line span:last-child { color: var(--orange); }
+  .progress-label .raised { color: var(--orange); }
+
+  .progress-bar {
+    height: 12px;
+    border-radius: 999px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--orange-hover));
+    border-radius: 999px 0 0 999px;
+    transition: width 0.4s ease;
+  }
+
+  .surplus-note {
+    margin: 0.6rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
 
   ul.reasons {
     list-style: none;
@@ -334,9 +367,14 @@
   <section aria-labelledby="goal-heading">
     <h2 id="goal-heading">Where your money goes</h2>
     <div class="card">
-      <div class="goal-line">
-        <span>Yearly hosting goal</span>
-        <span>£30</span>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span><span class="raised" id="raisedLabel">£0</span> raised of <span id="goalLabel">£30</span> goal</span>
+        </div>
+        <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30" aria-label="Donation progress toward yearly goal">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <p class="surplus-note" id="surplusNote"></p>
       </div>
       <ul class="reasons">
         <li>Covers the ULTRA.cc server rental for a full year of TeamSpeak hosting.</li>
@@ -387,6 +425,23 @@
 
   var REVOLUT_URL = "https://revolut.me/amjedlwa";
   var PAYPAL_URL = "https://paypal.me/arazez";
+
+  // Donation totals live in donations.json (edit by hand, or via
+  // ./update-donations.sh) so the raised amount can change without
+  // touching this file.
+  var DONATIONS_FILE = "donations.json";
+
+  // Used if donations.json can't be loaded (e.g. missing, or opening this
+  // file directly as file:// without a local server — fetch() needs http(s)).
+  var DEFAULT_DONATIONS = {
+    goal: 30,
+    raised: 0,
+    currency: "GBP",
+    closeWhenGoalReached: true,
+    surplusPolicy: "Any excess rolls into next year's hosting renewal."
+  };
+
+  var CURRENCY_SYMBOLS = { GBP: "£", USD: "$", EUR: "€" };
 
   /* ====================================================================== */
 
@@ -480,12 +535,79 @@
   }
 
   // --- URL preview override for local testing --------------------------------
-  // Append ?preview=open or ?preview=closed to force a state.
+  // Append ?preview=open, ?preview=closed or ?preview=goal to force a state.
   function getPreviewOverride() {
     var params = new URLSearchParams(window.location.search);
     var val = params.get("preview");
-    if (val === "open" || val === "closed") return val;
+    if (val === "open" || val === "closed" || val === "goal") return val;
     return null;
+  }
+
+  // --- Donation totals ---------------------------------------------------
+  var donationsData = DEFAULT_DONATIONS;
+
+  function formatMoney(amount, currency) {
+    var symbol = CURRENCY_SYMBOLS[currency] || (currency + " ");
+    var rounded = Math.round(amount * 100) / 100;
+    return symbol + (rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(2));
+  }
+
+  function loadDonations() {
+    return fetch(DONATIONS_FILE, { cache: "no-store" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        donationsData = {
+          goal: typeof data.goal === "number" ? data.goal : DEFAULT_DONATIONS.goal,
+          raised: typeof data.raised === "number" ? data.raised : DEFAULT_DONATIONS.raised,
+          currency: data.currency || DEFAULT_DONATIONS.currency,
+          closeWhenGoalReached: typeof data.closeWhenGoalReached === "boolean" ? data.closeWhenGoalReached : DEFAULT_DONATIONS.closeWhenGoalReached,
+          surplusPolicy: data.surplusPolicy || DEFAULT_DONATIONS.surplusPolicy
+        };
+      })
+      .catch(function (err) {
+        console.warn(
+          "Could not load " + DONATIONS_FILE + " — using defaults. " +
+          "(fetch() needs a local server, not a file:// URL — see README.)",
+          err
+        );
+        donationsData = DEFAULT_DONATIONS;
+      });
+  }
+
+  function renderProgress(data) {
+    var raisedLabel = document.getElementById("raisedLabel");
+    var goalLabel = document.getElementById("goalLabel");
+    var progressBar = document.getElementById("progressBar");
+    var progressFill = document.getElementById("progressFill");
+    var surplusNote = document.getElementById("surplusNote");
+
+    var goal = data.goal;
+    var raised = data.raised;
+    var pct = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
+
+    raisedLabel.textContent = formatMoney(raised, data.currency);
+    goalLabel.textContent = formatMoney(goal, data.currency);
+    progressFill.style.width = pct + "%";
+    progressBar.setAttribute("aria-valuenow", raised);
+    progressBar.setAttribute("aria-valuemax", goal);
+    surplusNote.textContent = data.surplusPolicy || "";
+  }
+
+  // --- Combine the date window with the donation total to get one state --
+  // "open" | "closed" | "goal". A preview override forces the named state
+  // outright (ignoring both the date and the totals) so each can be tested
+  // independently of the real calendar and real donations.json numbers.
+  function computeState(now, win, preview) {
+    if (preview === "open") return "open";
+    if (preview === "closed") return "closed";
+    if (preview === "goal") return "goal";
+
+    if (!isOpen(now, win)) return "closed";
+    if (donationsData.closeWhenGoalReached && donationsData.raised >= donationsData.goal) return "goal";
+    return "open";
   }
 
   // --- Build payment buttons (only ever inserted while OPEN) -----------------
@@ -516,19 +638,38 @@
     var now = nowInTimeZone(TIMEZONE);
     var win = getRelevantWindow(now);
     var preview = getPreviewOverride();
-    var open = preview ? preview === "open" : isOpen(now, win);
+    var state = computeState(now, win, preview);
 
     var banner = document.getElementById("statusBanner");
     var titleEl = document.getElementById("bannerTitle");
     var countdownEl = document.getElementById("bannerCountdown");
     var paymentButtons = document.getElementById("paymentButtons");
 
-    if (open) {
+    // ?preview=goal should look "goal reached" even if donations.json's
+    // real raised total hasn't caught up yet — simulate it for display.
+    var display = donationsData;
+    if (preview === "goal" && donationsData.raised < donationsData.goal) {
+      display = {
+        goal: donationsData.goal,
+        raised: donationsData.goal,
+        currency: donationsData.currency,
+        surplusPolicy: donationsData.surplusPolicy
+      };
+    }
+    renderProgress(display);
+
+    if (state === "open") {
       var closesAt = preview ? addDays(now, 3) : win.closesAt;
       banner.className = "banner open";
       titleEl.textContent = "Donations are open until " + formatDate(closesAt);
       countdownEl.innerHTML = "Closes in <strong>" + formatCountdown(closesAt - now) + "</strong>";
       renderPaymentButtons(paymentButtons);
+    } else if (state === "goal") {
+      banner.className = "banner goal";
+      titleEl.textContent = "🎉 Goal reached, thank you!";
+      countdownEl.innerHTML = "Final total: <strong>" + formatMoney(display.raised, display.currency) + "</strong> raised";
+      paymentButtons.hidden = true;
+      paymentButtons.innerHTML = "";
     } else {
       var opensAt = preview ? addDays(now, 14) : win.opensAt;
       banner.className = "banner closed";
@@ -539,8 +680,10 @@
     }
   }
 
-  render();
-  setInterval(render, 1000);
+  loadDonations().then(function () {
+    render();
+    setInterval(render, 1000);
+  });
 })();
 </script>
 
