@@ -375,7 +375,8 @@
 
 <main class="wrap">
 
-  <section aria-labelledby="goal-heading">
+  <!-- Hidden entirely while donations are closed: only relevant while collecting -->
+  <section aria-labelledby="goal-heading" id="moneyGoesSection">
     <h2 id="goal-heading">Where your money goes</h2>
     <div class="card">
       <div class="progress-wrap">
@@ -407,6 +408,22 @@
       <ul class="donors" id="donorList">
         <li>Amjed <span class="amt">£10</span></li>
         <li>Anonymous <span class="amt">£5</span></li>
+        <li>Your name here 👀</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="admins-heading">
+    <h2 id="admins-heading">Donor Admins 🛡️</h2>
+    <div class="card">
+      <p>These donors have been gifted server admin, at the owner's discretion:</p>
+      <!--
+        EDITABLE ADMIN LIST
+        Add/remove <li> entries by hand. The second line is the admin
+        level granted, edit or delete it as you see fit.
+      -->
+      <ul class="donors" id="adminList">
+        <li>Amjed <span class="amt">Full Admin</span></li>
         <li>Your name here 👀</li>
       </ul>
     </div>
@@ -656,6 +673,12 @@
     var countdownEl = document.getElementById("bannerCountdown");
     var paymentButtons = document.getElementById("paymentButtons");
     var perkNote = document.getElementById("perkNote");
+    var moneyGoesSection = document.getElementById("moneyGoesSection");
+
+    // "Where your money goes" (progress bar included) is only relevant
+    // while donations are actually being collected — hide it entirely
+    // once the window is closed, rather than showing a stale total.
+    moneyGoesSection.hidden = (state === "closed");
 
     // ?preview=goal should look "goal reached" even if donations.json's
     // real raised total hasn't caught up yet — simulate it for display.
@@ -668,7 +691,9 @@
         surplusPolicy: donationsData.surplusPolicy
       };
     }
-    renderProgress(display);
+    if (state !== "closed") {
+      renderProgress(display);
+    }
 
     if (state === "open") {
       var closesAt = preview ? addDays(now, 3) : win.closesAt;
