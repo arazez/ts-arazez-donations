@@ -7,6 +7,7 @@
   "maxPerPerson": 5,
   "donors": [
     { "name": "Amjed", "level": "Full Admin" },
+    { "name": "arazez", "level": "Admin" },
     { "name": "Anonymous", "level": "Admin" }
   ]
 }

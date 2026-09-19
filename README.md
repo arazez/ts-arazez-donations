@@ -64,14 +64,14 @@ This one file now drives the progress bar, the donation rules note, and the dono
 # Set the raised total directly (donor list untouched)
 ./update-donations.sh 17.50
 
-# Add a named donor: bumps raised by their amount (not stored per donor),
-# adds them to the "Thank you" list. Pass a hand-written level as the
-# 4th arg to give them a badge; omit it if they weren't given admin.
-./update-donations.sh add "Jamie" 5 "Full Admin"
-./update-donations.sh add "Anonymous" 2
+# Add a named donor to the "Thank you" list (doesn't touch raised —
+# no amount is stored or shown per donor). Pass a hand-written level
+# as the 2nd arg to give them a badge; omit it if no admin was given.
+./update-donations.sh add "Jamie" "Full Admin"
+./update-donations.sh add "Anonymous"
 ```
 
-Rewrites `donations.json` in place (requires Node, which is already on your machine if you've used npm/Cloudflare/GitHub tooling). The plain `<amount>` form only touches `raised`; the `add` form also appends to `donors`. Either way, the amount only ever affects the running total — it's never written into a donor's own entry.
+Rewrites `donations.json` in place (requires Node, which is already on your machine if you've used npm/Cloudflare/GitHub tooling). The two modes are independent: the plain `<amount>` form only touches `raised`; `add` only touches `donors`.
 
 ### Testing locally
 
