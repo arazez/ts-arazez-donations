@@ -156,6 +156,13 @@
 
   .countdown strong { color: var(--text); }
 
+  .perk-note {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin: 0 auto 0.25rem;
+    max-width: 46ch;
+  }
+
   /* Buttons */
   .btn-row {
     display: flex;
@@ -354,6 +361,10 @@
     <!-- Payment buttons: only inserted into the DOM when the window is OPEN -->
     <div class="btn-row" id="paymentButtons" hidden></div>
 
+    <p class="perk-note" id="perkNote" hidden>
+      🛡️ Donors are gifted server admin — the level is decided at the owner's discretion.
+    </p>
+
     <div class="btn-row">
       <a class="btn btn-outline" href="ts3server://ts.arazez.com">
         🎧 Join the server
@@ -377,7 +388,7 @@
         <p class="surplus-note" id="surplusNote"></p>
       </div>
       <ul class="reasons">
-        <li>Covers the ULTRA.cc server rental for a full year of TeamSpeak hosting.</li>
+        <li>Covers the server rental for a full year of TeamSpeak hosting.</li>
         <li>Keeps voice channels, permissions and server settings backed up and maintained.</li>
         <li>No profit — 100% of donations go toward server costs. Any excess simply rolls into next year's renewal.</li>
       </ul>
@@ -644,6 +655,7 @@
     var titleEl = document.getElementById("bannerTitle");
     var countdownEl = document.getElementById("bannerCountdown");
     var paymentButtons = document.getElementById("paymentButtons");
+    var perkNote = document.getElementById("perkNote");
 
     // ?preview=goal should look "goal reached" even if donations.json's
     // real raised total hasn't caught up yet — simulate it for display.
@@ -664,12 +676,14 @@
       titleEl.textContent = "Donations are open until " + formatDate(closesAt);
       countdownEl.innerHTML = "Closes in <strong>" + formatCountdown(closesAt - now) + "</strong>";
       renderPaymentButtons(paymentButtons);
+      perkNote.hidden = false;
     } else if (state === "goal") {
       banner.className = "banner goal";
       titleEl.textContent = "🎉 Goal reached, thank you!";
       countdownEl.innerHTML = "Final total: <strong>" + formatMoney(display.raised, display.currency) + "</strong> raised";
       paymentButtons.hidden = true;
       paymentButtons.innerHTML = "";
+      perkNote.hidden = true;
     } else {
       var opensAt = preview ? addDays(now, 14) : win.opensAt;
       banner.className = "banner closed";
@@ -677,6 +691,7 @@
       countdownEl.innerHTML = "Opens in <strong>" + formatCountdown(opensAt - now) + "</strong>";
       paymentButtons.hidden = true;
       paymentButtons.innerHTML = "";
+      perkNote.hidden = true;
     }
   }
 
