@@ -260,6 +260,12 @@
     transition: width 0.4s ease;
   }
 
+  .updated-note {
+    margin: 0.6rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
   ul.reasons {
     list-style: none;
     margin: 0;
@@ -365,38 +371,6 @@
     h1 { font-size: 1.7rem; }
   }
 
-  /* TEMP REVIEW TOGGLE — remove before deploying, for local review only */
-  .review-toggle {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    z-index: 1000;
-    display: flex;
-    gap: 0.4rem;
-    background: var(--bg-card);
-    border: 1px solid var(--orange);
-    border-radius: 10px;
-    padding: 0.5rem;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-    font-size: 0.8rem;
-  }
-
-  .review-toggle button {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    border-radius: 6px;
-    padding: 0.3rem 0.6rem;
-    cursor: pointer;
-    font-size: 0.8rem;
-  }
-
-  .review-toggle button.active {
-    background: var(--orange);
-    border-color: var(--orange);
-    color: #171310;
-    font-weight: 600;
-  }
 </style>
 </head>
 <body>
@@ -442,6 +416,7 @@
         <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30" aria-label="Donation progress toward yearly goal">
           <div class="progress-fill" id="progressFill" style="width:0%"></div>
         </div>
+        <p class="updated-note" id="updatedNote"></p>
       </div>
       <ul class="reasons">
         <li>Covers the server rental for a full year of TeamSpeak hosting.</li>
@@ -480,21 +455,9 @@
   <p>Mandem Server &middot; <code class="addr">ts.arazez.com</code></p>
 </footer>
 
-<!-- TEMP REVIEW TOGGLE — remove before deploying, for local review only -->
-<div class="review-toggle" id="reviewToggle" role="group" aria-label="Preview donation window state (dev only)">
-  <button type="button" data-preview="open">Open</button>
-  <button type="button" data-preview="closed">Closed</button>
-  <button type="button" data-preview="goal">Goal</button>
-  <button type="button" data-preview="">Real</button>
-</div>
-
 <script>
 (function () {
   "use strict";
-
-  // TEMP REVIEW TOGGLE — remove this line, the #reviewToggle wiring near
-  // the bottom of this script, and the HTML/CSS blocks marked the same way.
-  var manualPreviewOverride; // undefined = not overridden by the toggle buttons
 
   /* ======================================================================
      EDITABLE CONFIG — donation window + links
@@ -523,6 +486,7 @@
     closeWhenGoalReached: true,
     adminMinimum: 3,
     maxPerPerson: 5,
+    lastUpdated: "2026-09-19", // YYYY-MM-DD, shown as "Totals last updated ..."
     donors: [
       { name: "Amjed", level: "Full Admin" },
       { name: "Anonymous", level: "Admin" }
@@ -569,6 +533,13 @@
       timeZone: "UTC",
       day: "numeric", month: "long", year: "numeric"
     }).format(date);
+  }
+
+  // Parses a "YYYY-MM-DD" string (as stored in donations.json's
+  // lastUpdated) into a Date, for use with formatDate() above.
+  function parseDateOnly(str) {
+    var parts = str.split("-");
+    return new Date(Date.UTC(+parts[0], +parts[1] - 1, +parts[2]));
   }
 
   // --- Work out the donation window covering "now" --------------------------
@@ -625,9 +596,6 @@
   // --- URL preview override for local testing --------------------------------
   // Append ?preview=open, ?preview=closed or ?preview=goal to force a state.
   function getPreviewOverride() {
-    // TEMP REVIEW TOGGLE — remove manualPreviewOverride along with the
-    // #reviewToggle element/listener below when the review is done.
-    if (manualPreviewOverride !== undefined) return manualPreviewOverride;
     var params = new URLSearchParams(window.location.search);
     var val = params.get("preview");
     if (val === "open" || val === "closed" || val === "goal") return val;
@@ -657,6 +625,7 @@
           closeWhenGoalReached: typeof data.closeWhenGoalReached === "boolean" ? data.closeWhenGoalReached : DEFAULT_DONATIONS.closeWhenGoalReached,
           adminMinimum: typeof data.adminMinimum === "number" ? data.adminMinimum : DEFAULT_DONATIONS.adminMinimum,
           maxPerPerson: typeof data.maxPerPerson === "number" ? data.maxPerPerson : DEFAULT_DONATIONS.maxPerPerson,
+          lastUpdated: data.lastUpdated || DEFAULT_DONATIONS.lastUpdated,
           donors: Array.isArray(data.donors) ? data.donors : DEFAULT_DONATIONS.donors
         };
       })
@@ -675,6 +644,7 @@
     var goalLabel = document.getElementById("goalLabel");
     var progressBar = document.getElementById("progressBar");
     var progressFill = document.getElementById("progressFill");
+    var updatedNote = document.getElementById("updatedNote");
 
     var goal = data.goal;
     var raised = data.raised;
@@ -685,6 +655,9 @@
     progressFill.style.width = pct + "%";
     progressBar.setAttribute("aria-valuenow", raised);
     progressBar.setAttribute("aria-valuemax", goal);
+    updatedNote.textContent = data.lastUpdated
+      ? "Totals last updated " + formatDate(parseDateOnly(data.lastUpdated)) + "."
+      : "";
   }
 
   // --- Donor list (built once from donations.json's "donors" array) -----
@@ -775,7 +748,8 @@
       display = {
         goal: donationsData.goal,
         raised: donationsData.goal,
-        currency: donationsData.currency
+        currency: donationsData.currency,
+        lastUpdated: donationsData.lastUpdated
       };
     }
     if (state !== "closed") {
@@ -811,28 +785,6 @@
       perkNote.hidden = true;
     }
   }
-
-  // TEMP REVIEW TOGGLE — remove this block along with the HTML/CSS above
-  // once you're done reviewing the open/closed/goal states locally.
-  (function initReviewToggle() {
-    var toggle = document.getElementById("reviewToggle");
-    if (!toggle) return;
-    var buttons = toggle.querySelectorAll("button");
-    function setActive(val) {
-      buttons.forEach(function (btn) {
-        btn.classList.toggle("active", btn.getAttribute("data-preview") === (val || ""));
-      });
-    }
-    toggle.addEventListener("click", function (e) {
-      var btn = e.target.closest("button");
-      if (!btn) return;
-      var val = btn.getAttribute("data-preview");
-      manualPreviewOverride = val === "" ? undefined : val;
-      setActive(val);
-      render();
-    });
-    setActive("");
-  })();
 
   loadDonations().then(function () {
     renderDonors();

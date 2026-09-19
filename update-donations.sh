@@ -19,6 +19,9 @@
 #   ./update-donations.sh add "Jamie" "Full Admin"
 #   ./update-donations.sh add "Anonymous"
 #
+# Either mode also bumps "lastUpdated" to today's date automatically,
+# which the page shows as "Totals last updated ...".
+#
 # Uses Node (already required if you're deploying via Cloudflare Pages /
 # GitHub Pages tooling) to rewrite donations.json in place.
 
@@ -50,6 +53,7 @@ data.donors = data.donors || [];
 const donor = { name };
 if (level) donor.level = level;
 data.donors.push(donor);
+data.lastUpdated = new Date().toISOString().slice(0, 10);
 fs.writeFileSync(path, JSON.stringify(data, null, 2) + '\n');
 console.log('Added donor ' + name + (level ? ' (' + level + ')' : '') + ' in ' + path);
 " "$FILE" "$NAME" "$LEVEL"
@@ -76,6 +80,7 @@ const path = process.argv[1];
 const amount = Number(process.argv[2]);
 const data = JSON.parse(fs.readFileSync(path, 'utf8'));
 data.raised = amount;
+data.lastUpdated = new Date().toISOString().slice(0, 10);
 fs.writeFileSync(path, JSON.stringify(data, null, 2) + '\n');
 console.log('Updated raised to', amount, 'in', path);
 " "$FILE" "$AMOUNT"

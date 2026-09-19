@@ -29,6 +29,7 @@ var PAYPAL_URL = "https://paypal.me/arazez";
   "closeWhenGoalReached": true,
   "adminMinimum": 3,
   "maxPerPerson": 5,
+  "lastUpdated": "2026-09-19",
   "donors": [
     { "name": "Amjed", "level": "Full Admin" },
     { "name": "Anonymous", "level": "Admin" }
@@ -44,6 +45,7 @@ This one file now drives the progress bar, the donation rules note, and the dono
 - `adminMinimum`: the donation amount that qualifies someone for admin. Shown in the rules note under the donate buttons and in the "Thank you" intro text (both auto-formatted with `currency`).
 - `maxPerPerson`: the donation cap per person, shown as "Max £X per person so everyone gets a fair shot." in that same rules note.
 - `donors`: array of `{ "name": "...", "level": "..." }`. `level` is optional, hand-written free text (e.g. `"Full Admin"`, `"Admin"`, `"Trial Admin"`) shown as a badge next to their name in "Thank you" — you decide it per donor, it isn't auto-computed from `adminMinimum`. Leave it out entirely for a donor who wasn't given admin. No donation amounts are stored or shown per donor, only whether they donated and what level (if any) they were given.
+- `lastUpdated` (`"YYYY-MM-DD"`): shown as "Totals last updated [date]." under the progress bar, so donors can tell the total isn't stale. `update-donations.sh` bumps this to today automatically on every run — you shouldn't need to touch it by hand.
 - Easiest way to update `raised` and `donors`: run `./update-donations.sh` (see below) rather than hand-editing the JSON, though editing it directly works too.
 
 ### 3. Server name and contact links — in the HTML body of `index.html`
@@ -71,7 +73,7 @@ This one file now drives the progress bar, the donation rules note, and the dono
 ./update-donations.sh add "Anonymous"
 ```
 
-Rewrites `donations.json` in place (requires Node, which is already on your machine if you've used npm/Cloudflare/GitHub tooling). The two modes are independent: the plain `<amount>` form only touches `raised`; `add` only touches `donors`.
+Rewrites `donations.json` in place (requires Node, which is already on your machine if you've used npm/Cloudflare/GitHub tooling). The two modes are independent: the plain `<amount>` form only touches `raised`; `add` only touches `donors`. Both also bump `lastUpdated` to today automatically.
 
 ### Testing locally
 
@@ -90,8 +92,6 @@ Then open the page with a query string override so you don't have to wait for th
 - `?preview=goal` — forces the GOAL REACHED state (no buttons, "🎉 Goal reached" banner, progress bar shown full)
 
 No override = real date/time logic based on `TIMEZONE`, combined with the real `donations.json` totals.
-
-**Temporary review toggle:** the page currently also has a small floating "Open / Closed / Goal / Real" button group (bottom-right) that does the same thing as `?preview=` but instantly, client-side, no URL editing. Every block is commented `TEMP REVIEW TOGGLE — remove before deploying` in `index.html` (CSS, HTML, and JS) — search for that and delete all three before shipping to production.
 
 ## Deploying
 
