@@ -6,7 +6,7 @@
   "adminMinimum": 3,
   "maxPerPerson": 5,
   "donors": [
-    { "name": "Amjed", "admin": true },
-    { "name": "Anonymous", "admin": true }
+    { "name": "Amjed", "level": "Full Admin" },
+    { "name": "Anonymous", "level": "Admin" }
   ]
 }

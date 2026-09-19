@@ -695,10 +695,10 @@
     donationsData.donors.forEach(function (donor) {
       var li = document.createElement("li");
       li.textContent = donor.name;
-      if (donor.admin) {
+      if (donor.level) {
         var badge = document.createElement("span");
         badge.className = "amt";
-        badge.textContent = "🛡️ Admin";
+        badge.textContent = "🛡️ " + donor.level;
         li.appendChild(document.createTextNode(" "));
         li.appendChild(badge);
       }

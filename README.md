@@ -30,8 +30,8 @@ var PAYPAL_URL = "https://paypal.me/arazez";
   "adminMinimum": 3,
   "maxPerPerson": 5,
   "donors": [
-    { "name": "Amjed", "admin": true },
-    { "name": "Anonymous", "admin": true }
+    { "name": "Amjed", "level": "Full Admin" },
+    { "name": "Anonymous", "level": "Admin" }
   ]
 }
 ```
@@ -43,7 +43,7 @@ This one file now drives the progress bar, the donation rules note, and the dono
 - `closeWhenGoalReached` (`true`/`false`): when `true` and `raised >= goal`, the page treats donations as closed even if the yearly window is still open — the Revolut/PayPal buttons are hidden and the banner shows "🎉 Goal reached, thank you!" with the final total instead. Set to `false` if you'd rather keep accepting donations past the goal.
 - `adminMinimum`: the donation amount that qualifies someone for admin. Shown in the rules note under the donate buttons and in the "Thank you" intro text (both auto-formatted with `currency`).
 - `maxPerPerson`: the donation cap per person, shown as "Max £X per person so everyone gets a fair shot." in that same rules note.
-- `donors`: array of `{ "name": "...", "admin": true|false }`. `admin` is set by hand per donor (typically because they met `adminMinimum`, but it's not auto-computed — you decide), and controls whether they get the 🛡️ Admin badge in "Thank you". No amounts are stored or shown per donor.
+- `donors`: array of `{ "name": "...", "level": "..." }`. `level` is optional, hand-written free text (e.g. `"Full Admin"`, `"Admin"`, `"Trial Admin"`) shown as a badge next to their name in "Thank you" — you decide it per donor, it isn't auto-computed from `adminMinimum`. Leave it out entirely for a donor who wasn't given admin. No donation amounts are stored or shown per donor, only whether they donated and what level (if any) they were given.
 - Easiest way to update `raised` and `donors`: run `./update-donations.sh` (see below) rather than hand-editing the JSON, though editing it directly works too.
 
 ### 3. Server name and contact links — in the HTML body of `index.html`
@@ -54,7 +54,7 @@ This one file now drives the progress bar, the donation rules note, and the dono
 
 ### Section visibility by state
 
-- **Open**: banner, buttons, admin/max-donation rules note, "Where your money goes" (with progress bar), "Thank you" (donor list, 🛡️ Admin badge on qualifying donors).
+- **Open**: banner, buttons, admin/max-donation rules note, "Where your money goes" (with progress bar), "Thank you" (donor list, 🛡️ level badge on donors who have one).
 - **Goal reached**: same as open minus the buttons/rules note; "Where your money goes" still shows to display the final total.
 - **Closed**: banner only (no buttons, no rules note) — "Where your money goes" is hidden entirely (no stale progress bar), leaving just "Thank you".
 
@@ -64,13 +64,14 @@ This one file now drives the progress bar, the donation rules note, and the dono
 # Set the raised total directly (donor list untouched)
 ./update-donations.sh 17.50
 
-# Add a named donor: bumps raised by their amount, adds them to the
-# "Thank you" list. Pass "admin" as a 4th arg to give them the badge.
-./update-donations.sh add "Jamie" 5 admin
+# Add a named donor: bumps raised by their amount (not stored per donor),
+# adds them to the "Thank you" list. Pass a hand-written level as the
+# 4th arg to give them a badge; omit it if they weren't given admin.
+./update-donations.sh add "Jamie" 5 "Full Admin"
 ./update-donations.sh add "Anonymous" 2
 ```
 
-Rewrites `donations.json` in place (requires Node, which is already on your machine if you've used npm/Cloudflare/GitHub tooling). The plain `<amount>` form only touches `raised`; the `add` form also appends to `donors`.
+Rewrites `donations.json` in place (requires Node, which is already on your machine if you've used npm/Cloudflare/GitHub tooling). The plain `<amount>` form only touches `raised`; the `add` form also appends to `donors`. Either way, the amount only ever affects the running total — it's never written into a donor's own entry.
 
 ### Testing locally
 
