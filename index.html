@@ -295,12 +295,6 @@
     gap: 0.6rem;
   }
 
-  .admin-sub {
-    margin: 1.5rem 0 0.75rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--border);
-  }
-
   .donors li {
     background: var(--bg);
     border: 1px solid var(--border);
@@ -405,25 +399,16 @@
   <section aria-labelledby="thanks-heading">
     <h2 id="thanks-heading">Thank you 🧡</h2>
     <div class="card">
-      <p>Massive thanks to everyone who's chipped in to keep the server running:</p>
+      <p>Massive thanks to everyone who's chipped in to keep the server running. Some donors have also been gifted server admin, at the owner's discretion:</p>
       <!--
         EDITABLE DONOR LIST
-        Add/remove <li> entries by hand. Names only, no amounts.
+        Add/remove <li> entries by hand, one per donor. If they were
+        gifted admin, add a <span class="amt"> line with the level
+        granted; otherwise leave it out.
       -->
       <ul class="donors" id="donorList">
-        <li>Amjed</li>
-        <li>Anonymous</li>
-        <li>Your name here 👀</li>
-      </ul>
-
-      <p class="admin-sub">These donors have also been gifted server admin, at the owner's discretion:</p>
-      <!--
-        EDITABLE ADMIN LIST
-        Add/remove <li> entries by hand. The second line is the admin
-        level granted, edit or delete it as you see fit.
-      -->
-      <ul class="donors" id="adminList">
         <li>Amjed <span class="amt">Full Admin</span></li>
+        <li>Anonymous</li>
         <li>Your name here 👀</li>
       </ul>
     </div>

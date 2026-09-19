@@ -37,17 +37,17 @@ var PAYPAL_URL = "https://paypal.me/arazez";
 - `surplusPolicy` is a short free-text note shown under the progress bar (e.g. what happens to money raised beyond the goal).
 - Easiest way to update `raised`: run `./update-donations.sh <amount>` (see below) rather than hand-editing the JSON, though editing it directly works too.
 
-### 3. Server name, donor list, and admin list — in the HTML body of `index.html`
+### 3. Server name and donor list — in the HTML body of `index.html`
 
 - Server name/subtitle: in the `<header class="hero">` section.
-- Both lists live in the single "Thank you" section: the donor thank-you list (`<ul class="donors" id="donorList">`) and, below it, the donor admins list (`<ul class="donors" id="adminList">`). Edit `<li>` entries by hand in either. Donor list is names only; admin list's `<span class="amt">` line holds the admin level granted (owner's discretion). This section always shows, even while donations are closed.
+- Donor list: edit the `<ul class="donors" id="donorList">` items by hand, one `<li>` per donor. If they were gifted admin, add a `<span class="amt">` line with the level granted (owner's discretion); otherwise just the name. This section always shows, even while donations are closed.
 - TeamSpeak address (`ts.arazez.com`) appears in a few places — the "Join the server" button href (`ts3server://ts.arazez.com`), the header, and the footer.
 
 ### Section visibility by state
 
-- **Open**: banner, buttons, admin perk note, "Where your money goes" (with progress bar), "Thank you" (donor list + admin list).
+- **Open**: banner, buttons, admin perk note, "Where your money goes" (with progress bar), "Thank you" (donor list, admin levels shown inline).
 - **Goal reached**: same as open minus the buttons/perk note; "Where your money goes" still shows to display the final total.
-- **Closed**: banner only (no buttons, no perk note) — "Where your money goes" is hidden entirely (no stale progress bar), leaving just "Thank you" (donor list + admin list).
+- **Closed**: banner only (no buttons, no perk note) — "Where your money goes" is hidden entirely (no stale progress bar), leaving just "Thank you".
 
 ### Updating the raised total: `update-donations.sh`
 
