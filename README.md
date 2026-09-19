@@ -40,15 +40,14 @@ var PAYPAL_URL = "https://paypal.me/arazez";
 ### 3. Server name, donor list, and admin list — in the HTML body of `index.html`
 
 - Server name/subtitle: in the `<header class="hero">` section.
-- Donor thank-you list: edit the `<ul class="donors" id="donorList">` items by hand — add or remove `<li>` entries. Names only, no amounts shown.
-- Donor admins list: edit the `<ul class="donors" id="adminList">` items by hand the same way — the `<span class="amt">` line holds the admin level granted (owner's discretion). This section always shows, even while donations are closed.
+- Both lists live in the single "Thank you" section: the donor thank-you list (`<ul class="donors" id="donorList">`) and, below it, the donor admins list (`<ul class="donors" id="adminList">`). Edit `<li>` entries by hand in either. Donor list is names only; admin list's `<span class="amt">` line holds the admin level granted (owner's discretion). This section always shows, even while donations are closed.
 - TeamSpeak address (`ts.arazez.com`) appears in a few places — the "Join the server" button href (`ts3server://ts.arazez.com`), the header, and the footer.
 
 ### Section visibility by state
 
-- **Open**: banner, buttons, admin perk note, "Where your money goes" (with progress bar), "Thank you", "Donor Admins".
+- **Open**: banner, buttons, admin perk note, "Where your money goes" (with progress bar), "Thank you" (donor list + admin list).
 - **Goal reached**: same as open minus the buttons/perk note; "Where your money goes" still shows to display the final total.
-- **Closed**: banner only (no buttons, no perk note) — "Where your money goes" is hidden entirely (no stale progress bar), leaving just "Thank you" and "Donor Admins".
+- **Closed**: banner only (no buttons, no perk note) — "Where your money goes" is hidden entirely (no stale progress bar), leaving just "Thank you" (donor list + admin list).
 
 ### Updating the raised total: `update-donations.sh`
 

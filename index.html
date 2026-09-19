@@ -295,6 +295,12 @@
     gap: 0.6rem;
   }
 
+  .admin-sub {
+    margin: 1.5rem 0 0.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
   .donors li {
     background: var(--bg);
     border: 1px solid var(--border);
@@ -409,13 +415,8 @@
         <li>Anonymous</li>
         <li>Your name here 👀</li>
       </ul>
-    </div>
-  </section>
 
-  <section aria-labelledby="admins-heading">
-    <h2 id="admins-heading">Donor Admins 🛡️</h2>
-    <div class="card">
-      <p>These donors have been gifted server admin, at the owner's discretion:</p>
+      <p class="admin-sub">These donors have also been gifted server admin, at the owner's discretion:</p>
       <!--
         EDITABLE ADMIN LIST
         Add/remove <li> entries by hand. The second line is the admin
