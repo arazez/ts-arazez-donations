@@ -214,9 +214,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 7px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
     background: rgba(255, 255, 255, 0.18);
     font-size: 0.8rem;
     font-weight: 800;
@@ -722,20 +722,11 @@
   }
 
   // --- Build payment buttons (only ever inserted while OPEN) -----------------
-  // Each uses a simple hand-drawn badge evoking the brand rather than an
-  // official logo image, to avoid pulling in external/trademarked assets.
-  // PayPal's overlapping double-P is recreated as inline SVG (its own two
-  // brand blues); Revolut/Monzo use a single lettermark, matching how
-  // their actual app icons are just a monogram on a flat colour.
-  var PAYPAL_ICON_SVG =
-    '<svg width="18" height="16" viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-    '<text x="0" y="13" font-family="Georgia, \'Times New Roman\', serif" font-weight="bold" font-style="italic" font-size="15" fill="#00306f">P</text>' +
-    '<text x="7" y="13" font-family="Georgia, \'Times New Roman\', serif" font-weight="bold" font-style="italic" font-size="15" fill="#5ec6f2">P</text>' +
-    '</svg>';
-
+  // Each uses a simple lettermark badge rather than an official logo image,
+  // to avoid pulling in external/trademarked assets.
   var PAYMENT_METHODS = [
     { cls: "btn-revolut", href: REVOLUT_URL, label: "Revolut", icon: "R" },
-    { cls: "btn-paypal", href: PAYPAL_URL, label: "PayPal", iconSvg: PAYPAL_ICON_SVG },
+    { cls: "btn-paypal", href: PAYPAL_URL, label: "PayPal", icon: "P" },
     { cls: "btn-monzo", href: MONZO_URL, label: "Monzo", icon: "M" }
   ];
 
@@ -752,11 +743,7 @@
       var icon = document.createElement("span");
       icon.className = "btn-icon";
       icon.setAttribute("aria-hidden", "true");
-      if (method.iconSvg) {
-        icon.innerHTML = method.iconSvg; // static, hand-authored markup — not user input
-      } else {
-        icon.textContent = method.icon;
-      }
+      icon.textContent = method.icon;
       btn.appendChild(icon);
 
       btn.appendChild(document.createTextNode("Donate with " + method.label));
