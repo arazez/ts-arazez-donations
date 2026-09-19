@@ -40,7 +40,7 @@ var PAYPAL_URL = "https://paypal.me/arazez";
 ### 3. Server name, donor list, and admin list — in the HTML body of `index.html`
 
 - Server name/subtitle: in the `<header class="hero">` section.
-- Donor thank-you list: edit the `<ul class="donors" id="donorList">` items by hand — add or remove `<li>` entries, each optionally with a `<span class="amt">` for the amount.
+- Donor thank-you list: edit the `<ul class="donors" id="donorList">` items by hand — add or remove `<li>` entries. Names only, no amounts shown.
 - Donor admins list: edit the `<ul class="donors" id="adminList">` items by hand the same way — the `<span class="amt">` line holds the admin level granted (owner's discretion). This section always shows, even while donations are closed.
 - TeamSpeak address (`ts.arazez.com`) appears in a few places — the "Join the server" button href (`ts3server://ts.arazez.com`), the header, and the footer.
 
