@@ -27,7 +27,6 @@ var PAYPAL_URL = "https://paypal.me/arazez";
   "raised": 3,
   "currency": "GBP",
   "closeWhenGoalReached": true,
-  "surplusPolicy": "Any excess rolls into next year's hosting renewal.",
   "adminMinimum": 3,
   "maxPerPerson": 5,
   "donors": [
@@ -42,7 +41,6 @@ This one file now drives the progress bar, the donation rules note, and the dono
 - `goal` / `raised` drive the progress bar shown under "Where your money goes".
 - `raised` starts each year at `3` (not `0`) to account for the owner's own automatic £3/yr contribution to the server. When you reset the total at the start of a new donation window, reset it to `3`, not `0`.
 - `closeWhenGoalReached` (`true`/`false`): when `true` and `raised >= goal`, the page treats donations as closed even if the yearly window is still open — the Revolut/PayPal buttons are hidden and the banner shows "🎉 Goal reached, thank you!" with the final total instead. Set to `false` if you'd rather keep accepting donations past the goal.
-- `surplusPolicy` is a short free-text note shown under the progress bar (e.g. what happens to money raised beyond the goal).
 - `adminMinimum`: the donation amount that qualifies someone for admin. Shown in the rules note under the donate buttons and in the "Thank you" intro text (both auto-formatted with `currency`).
 - `maxPerPerson`: the donation cap per person, shown as "Max £X per person so everyone gets a fair shot." in that same rules note.
 - `donors`: array of `{ "name": "...", "admin": true|false }`. `admin` is set by hand per donor (typically because they met `adminMinimum`, but it's not auto-computed — you decide), and controls whether they get the 🛡️ Admin badge in "Thank you". No amounts are stored or shown per donor.

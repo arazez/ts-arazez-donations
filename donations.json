@@ -3,7 +3,6 @@
   "raised": 3,
   "currency": "GBP",
   "closeWhenGoalReached": true,
-  "surplusPolicy": "Any excess rolls into next year's hosting renewal.",
   "adminMinimum": 3,
   "maxPerPerson": 5,
   "donors": [

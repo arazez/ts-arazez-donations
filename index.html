@@ -260,12 +260,6 @@
     transition: width 0.4s ease;
   }
 
-  .surplus-note {
-    margin: 0.6rem 0 0;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-  }
-
   ul.reasons {
     list-style: none;
     margin: 0;
@@ -448,12 +442,11 @@
         <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30" aria-label="Donation progress toward yearly goal">
           <div class="progress-fill" id="progressFill" style="width:0%"></div>
         </div>
-        <p class="surplus-note" id="surplusNote"></p>
       </div>
       <ul class="reasons">
         <li>Covers the server rental for a full year of TeamSpeak hosting.</li>
         <li>Keeps voice channels, permissions and server settings backed up and maintained.</li>
-        <li>No profit. 100% of donations go toward server costs, and any excess simply rolls into next year's renewal.</li>
+        <li>No profit. 100% of donations go toward server costs.</li>
       </ul>
     </div>
   </section>
@@ -525,7 +518,6 @@
     raised: 3, // owner's own automatic £3/yr contribution counts as a baseline
     currency: "GBP",
     closeWhenGoalReached: true,
-    surplusPolicy: "Any excess rolls into next year's hosting renewal.",
     adminMinimum: 3,
     maxPerPerson: 5,
     donors: []
@@ -657,7 +649,6 @@
           raised: typeof data.raised === "number" ? data.raised : DEFAULT_DONATIONS.raised,
           currency: data.currency || DEFAULT_DONATIONS.currency,
           closeWhenGoalReached: typeof data.closeWhenGoalReached === "boolean" ? data.closeWhenGoalReached : DEFAULT_DONATIONS.closeWhenGoalReached,
-          surplusPolicy: data.surplusPolicy || DEFAULT_DONATIONS.surplusPolicy,
           adminMinimum: typeof data.adminMinimum === "number" ? data.adminMinimum : DEFAULT_DONATIONS.adminMinimum,
           maxPerPerson: typeof data.maxPerPerson === "number" ? data.maxPerPerson : DEFAULT_DONATIONS.maxPerPerson,
           donors: Array.isArray(data.donors) ? data.donors : DEFAULT_DONATIONS.donors
@@ -678,7 +669,6 @@
     var goalLabel = document.getElementById("goalLabel");
     var progressBar = document.getElementById("progressBar");
     var progressFill = document.getElementById("progressFill");
-    var surplusNote = document.getElementById("surplusNote");
 
     var goal = data.goal;
     var raised = data.raised;
@@ -689,7 +679,6 @@
     progressFill.style.width = pct + "%";
     progressBar.setAttribute("aria-valuenow", raised);
     progressBar.setAttribute("aria-valuemax", goal);
-    surplusNote.textContent = data.surplusPolicy || "";
   }
 
   // --- Donor list (built once from donations.json's "donors" array) -----
@@ -780,8 +769,7 @@
       display = {
         goal: donationsData.goal,
         raised: donationsData.goal,
-        currency: donationsData.currency,
-        surplusPolicy: donationsData.surplusPolicy
+        currency: donationsData.currency
       };
     }
     if (state !== "closed") {
