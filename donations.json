@@ -3,5 +3,11 @@
   "raised": 3,
   "currency": "GBP",
   "closeWhenGoalReached": true,
-  "surplusPolicy": "Any excess rolls into next year's hosting renewal."
+  "surplusPolicy": "Any excess rolls into next year's hosting renewal.",
+  "adminMinimum": 3,
+  "maxPerPerson": 5,
+  "donors": [
+    { "name": "Amjed", "admin": true },
+    { "name": "Anonymous", "admin": true }
+  ]
 }

@@ -425,9 +425,7 @@
     <!-- Payment buttons: only inserted into the DOM when the window is OPEN -->
     <div class="btn-row" id="paymentButtons" hidden></div>
 
-    <p class="perk-note" id="perkNote" hidden>
-      🛡️ Donors are gifted server admin, with the level decided at the owner's discretion.
-    </p>
+    <p class="perk-note" id="perkNote" hidden></p>
 
     <div class="btn-row">
       <a class="btn btn-outline" href="ts3server://ts.arazez.com">
@@ -463,16 +461,9 @@
   <section aria-labelledby="thanks-heading">
     <h2 id="thanks-heading">Thank you 🧡</h2>
     <div class="card">
-      <p>Massive thanks to everyone who's chipped in to keep the server running. All donors have also been gifted server admin, the level at the owner's discretion:</p>
-      <!--
-        EDITABLE DONOR LIST
-        Add/remove <li> entries by hand, one per donor. The
-        <span class="amt"> line holds the admin level granted.
-      -->
-      <ul class="donors" id="donorList">
-        <li>Amjed <span class="amt">Full Admin</span></li>
-        <li>Anonymous <span class="amt">Admin</span></li>
-      </ul>
+      <!-- Filled in by JS from donations.json's "donors" array -->
+      <p id="thanksIntro">Massive thanks to everyone who's chipped in to keep the server running.</p>
+      <ul class="donors" id="donorList"></ul>
     </div>
   </section>
 
@@ -534,7 +525,10 @@
     raised: 3, // owner's own automatic £3/yr contribution counts as a baseline
     currency: "GBP",
     closeWhenGoalReached: true,
-    surplusPolicy: "Any excess rolls into next year's hosting renewal."
+    surplusPolicy: "Any excess rolls into next year's hosting renewal.",
+    adminMinimum: 3,
+    maxPerPerson: 5,
+    donors: []
   };
 
   var CURRENCY_SYMBOLS = { GBP: "£", USD: "$", EUR: "€" };
@@ -663,7 +657,10 @@
           raised: typeof data.raised === "number" ? data.raised : DEFAULT_DONATIONS.raised,
           currency: data.currency || DEFAULT_DONATIONS.currency,
           closeWhenGoalReached: typeof data.closeWhenGoalReached === "boolean" ? data.closeWhenGoalReached : DEFAULT_DONATIONS.closeWhenGoalReached,
-          surplusPolicy: data.surplusPolicy || DEFAULT_DONATIONS.surplusPolicy
+          surplusPolicy: data.surplusPolicy || DEFAULT_DONATIONS.surplusPolicy,
+          adminMinimum: typeof data.adminMinimum === "number" ? data.adminMinimum : DEFAULT_DONATIONS.adminMinimum,
+          maxPerPerson: typeof data.maxPerPerson === "number" ? data.maxPerPerson : DEFAULT_DONATIONS.maxPerPerson,
+          donors: Array.isArray(data.donors) ? data.donors : DEFAULT_DONATIONS.donors
         };
       })
       .catch(function (err) {
@@ -693,6 +690,31 @@
     progressBar.setAttribute("aria-valuenow", raised);
     progressBar.setAttribute("aria-valuemax", goal);
     surplusNote.textContent = data.surplusPolicy || "";
+  }
+
+  // --- Donor list (built once from donations.json's "donors" array) -----
+  function renderDonors() {
+    var thanksIntro = document.getElementById("thanksIntro");
+    var donorList = document.getElementById("donorList");
+    var minimum = formatMoney(donationsData.adminMinimum, donationsData.currency);
+
+    thanksIntro.textContent =
+      "Massive thanks to everyone who's chipped in to keep the server running. " +
+      "Donors of " + minimum + "+ are gifted server admin, the level at the owner's discretion.";
+
+    donorList.innerHTML = "";
+    donationsData.donors.forEach(function (donor) {
+      var li = document.createElement("li");
+      li.textContent = donor.name;
+      if (donor.admin) {
+        var badge = document.createElement("span");
+        badge.className = "amt";
+        badge.textContent = "🛡️ Admin";
+        li.appendChild(document.createTextNode(" "));
+        li.appendChild(badge);
+      }
+      donorList.appendChild(li);
+    });
   }
 
   // --- Combine the date window with the donation total to get one state --
@@ -772,6 +794,11 @@
       titleEl.textContent = "Donations are open until " + formatDate(closesAt);
       countdownEl.innerHTML = "Closes in <strong>" + formatCountdown(closesAt - now) + "</strong>";
       renderPaymentButtons(paymentButtons);
+      perkNote.innerHTML =
+        "🛡️ Donate " + formatMoney(donationsData.adminMinimum, donationsData.currency) +
+        "+ to be gifted server admin, the level at the owner's discretion. Max " +
+        formatMoney(donationsData.maxPerPerson, donationsData.currency) +
+        " per person so everyone gets a fair shot.";
       perkNote.hidden = false;
     } else if (state === "goal") {
       banner.className = "banner goal";
@@ -814,6 +841,7 @@
   })();
 
   loadDonations().then(function () {
+    renderDonors();
     render();
     setInterval(render, 1000);
   });
