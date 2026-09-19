@@ -309,11 +309,42 @@
     display: block;
   }
 
-  .contact-line {
+  .contact-section {
     text-align: center;
+  }
+
+  .contact-lead {
     color: var(--text-dim);
     font-size: 0.95rem;
+    margin: 0 0 0.75rem;
   }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .contact-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-decoration: none;
+  }
+
+  a.contact-chip:hover {
+    border-color: var(--orange);
+    color: var(--text);
+  }
+
+  .contact-chip strong { color: var(--text); }
 
   footer {
     border-top: 1px solid var(--border);
@@ -412,9 +443,18 @@
     </div>
   </section>
 
-  <p class="contact-line">
-    Questions? Message me on TeamSpeak or Discord <strong>arazez</strong>.
-  </p>
+  <div class="contact-section" aria-label="Contact">
+    <p class="contact-lead">Questions? Reach out:</p>
+    <div class="contact-links">
+      <span class="contact-chip">💬 TeamSpeak / Discord: <strong>arazez</strong></span>
+      <a class="contact-chip" href="https://twitter.com/arazez" target="_blank" rel="noopener noreferrer">
+        🐦 Twitter: <strong>@arazez</strong>
+      </a>
+      <a class="contact-chip" href="https://steamcommunity.com/profiles/76561198033745228/" target="_blank" rel="noopener noreferrer">
+        🎮 Steam
+      </a>
+    </div>
+  </div>
 
 </main>
 

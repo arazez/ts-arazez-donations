@@ -42,6 +42,7 @@ var PAYPAL_URL = "https://paypal.me/arazez";
 - Server name/subtitle: in the `<header class="hero">` section.
 - Donor list: edit the `<ul class="donors" id="donorList">` items by hand, one `<li>` per donor. Every donor is gifted admin, so add a `<span class="amt">` line with the level granted (owner's discretion). This section always shows, even while donations are closed.
 - TeamSpeak address (`ts.arazez.com`) appears in a few places — the "Join the server" button href (`ts3server://ts.arazez.com`), the header, and the footer.
+- Contact section (bottom of the page, `.contact-links`): three small chips — TeamSpeak/Discord handle (plain text), Twitter link, Steam profile link. Edit the handle text or the `href`s directly in that block.
 
 ### Section visibility by state
 
