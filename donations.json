@@ -8,15 +8,39 @@
   "lastUpdated": "2026-09-19",
   "donors": [
     {
-      "name": "Amjed",
-      "level": "Full Admin"
+      "name": "arazez",
+      "level": "Owner"
     },
     {
-      "name": "arazez",
+      "name": "faux",
+      "level": "Super Admin"
+    },    
+	{
+      "name": "RaadehTTV",
+      "level": "Super Admin"
+    },
+	{
+      "name": "Zoopi",
+      "level": "Super Admin"
+    },
+	{
+      "name": "ghaith97",
+      "level": "Super Admin"
+    },
+	{
+      "name": "Jawad",
+      "level": "Admin"
+    },
+	{
+      "name": "judas",
+      "level": "Admin"
+    },
+	{
+      "name": "Fizzy",
       "level": "Admin"
     },
     {
-      "name": "Anonymous",
+      "name": "hashithefourth",
       "level": "Admin"
     }
   ]
