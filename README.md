@@ -24,7 +24,7 @@ var PAYPAL_URL = "https://paypal.me/arazez";
 ```json
 {
   "goal": 30,
-  "raised": 0,
+  "raised": 3,
   "currency": "GBP",
   "closeWhenGoalReached": true,
   "surplusPolicy": "Any excess rolls into next year's hosting renewal."
@@ -32,6 +32,7 @@ var PAYPAL_URL = "https://paypal.me/arazez";
 ```
 
 - `goal` / `raised` drive the progress bar shown under "Where your money goes".
+- `raised` starts each year at `3` (not `0`) to account for the owner's own automatic £3/yr contribution to the server. When you reset the total at the start of a new donation window, reset it to `3`, not `0`.
 - `closeWhenGoalReached` (`true`/`false`): when `true` and `raised >= goal`, the page treats donations as closed even if the yearly window is still open — the Revolut/PayPal buttons are hidden and the banner shows "🎉 Goal reached, thank you!" with the final total instead. Set to `false` if you'd rather keep accepting donations past the goal.
 - `surplusPolicy` is a short free-text note shown under the progress bar (e.g. what happens to money raised beyond the goal).
 - Easiest way to update `raised`: run `./update-donations.sh <amount>` (see below) rather than hand-editing the JSON, though editing it directly works too.

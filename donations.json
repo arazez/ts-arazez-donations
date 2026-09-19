@@ -1,6 +1,6 @@
 {
   "goal": 30,
-  "raised": 0,
+  "raised": 3,
   "currency": "GBP",
   "closeWhenGoalReached": true,
   "surplusPolicy": "Any excess rolls into next year's hosting renewal."
