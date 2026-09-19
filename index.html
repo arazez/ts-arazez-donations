@@ -190,23 +190,38 @@
 
   .btn:hover { transform: translateY(-2px); }
 
-  .btn-primary {
-    background: var(--orange);
-    color: #171310;
+  /* Brand-accurate colours: Revolut black, PayPal blue, Monzo coral */
+  .btn-revolut {
+    background: #000000;
+    color: #fff;
+    border-color: #3a3d44;
   }
-  .btn-primary:hover { background: var(--orange-hover); }
+  .btn-revolut:hover { background: #1a1a1a; border-color: #5a5e66; }
 
   .btn-paypal {
-    background: #ffc439;
-    color: #14130b;
+    background: #0070ba;
+    color: #fff;
   }
-  .btn-paypal:hover { background: #ffd166; }
+  .btn-paypal:hover { background: #009cde; }
 
   .btn-monzo {
     background: #ff3d68;
     color: #fff;
   }
   .btn-monzo:hover { background: #ff6288; }
+
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 0.8rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
 
   .btn-outline {
     background: transparent;
@@ -707,32 +722,33 @@
   }
 
   // --- Build payment buttons (only ever inserted while OPEN) -----------------
+  // Each uses a simple lettermark badge rather than an official logo image,
+  // to avoid pulling in external/trademarked assets.
+  var PAYMENT_METHODS = [
+    { cls: "btn-revolut", href: REVOLUT_URL, label: "Revolut", icon: "R" },
+    { cls: "btn-paypal", href: PAYPAL_URL, label: "PayPal", icon: "P" },
+    { cls: "btn-monzo", href: MONZO_URL, label: "Monzo", icon: "M" }
+  ];
+
   function renderPaymentButtons(container) {
     container.innerHTML = "";
 
-    var revolut = document.createElement("a");
-    revolut.className = "btn btn-primary";
-    revolut.href = REVOLUT_URL;
-    revolut.target = "_blank";
-    revolut.rel = "noopener noreferrer";
-    revolut.textContent = "Donate with Revolut";
-    container.appendChild(revolut);
+    PAYMENT_METHODS.forEach(function (method) {
+      var btn = document.createElement("a");
+      btn.className = "btn " + method.cls;
+      btn.href = method.href;
+      btn.target = "_blank";
+      btn.rel = "noopener noreferrer";
 
-    var paypal = document.createElement("a");
-    paypal.className = "btn btn-paypal";
-    paypal.href = PAYPAL_URL;
-    paypal.target = "_blank";
-    paypal.rel = "noopener noreferrer";
-    paypal.textContent = "Donate with PayPal";
-    container.appendChild(paypal);
+      var icon = document.createElement("span");
+      icon.className = "btn-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = method.icon;
+      btn.appendChild(icon);
 
-    var monzo = document.createElement("a");
-    monzo.className = "btn btn-monzo";
-    monzo.href = MONZO_URL;
-    monzo.target = "_blank";
-    monzo.rel = "noopener noreferrer";
-    monzo.textContent = "Donate with Monzo";
-    container.appendChild(monzo);
+      btn.appendChild(document.createTextNode("Donate with " + method.label));
+      container.appendChild(btn);
+    });
 
     container.hidden = false;
   }
