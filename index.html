@@ -514,6 +514,8 @@
 
   // Used if donations.json can't be loaded (e.g. missing, or opening this
   // file directly as file:// without a local server — fetch() needs http(s)).
+  // Kept roughly in sync with donations.json so a direct file:// open still
+  // shows something sensible instead of an empty donor list.
   var DEFAULT_DONATIONS = {
     goal: 30,
     raised: 3, // owner's own automatic £3/yr contribution counts as a baseline
@@ -521,7 +523,10 @@
     closeWhenGoalReached: true,
     adminMinimum: 3,
     maxPerPerson: 5,
-    donors: []
+    donors: [
+      { name: "Amjed", level: "Full Admin" },
+      { name: "Anonymous", level: "Admin" }
+    ]
   };
 
   var CURRENCY_SYMBOLS = { GBP: "£", USD: "$", EUR: "€" };
