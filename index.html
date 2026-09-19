@@ -202,6 +202,12 @@
   }
   .btn-paypal:hover { background: #ffd166; }
 
+  .btn-monzo {
+    background: #ff3d68;
+    color: #fff;
+  }
+  .btn-monzo:hover { background: #ff6288; }
+
   .btn-outline {
     background: transparent;
     color: var(--text);
@@ -469,6 +475,7 @@
 
   var REVOLUT_URL = "https://revolut.me/amjedlwa";
   var PAYPAL_URL = "https://paypal.me/arazez";
+  var MONZO_URL = "https://monzo.me/amjedagabani";
 
   // Donation totals live in donations.json (edit by hand, or via
   // ./update-donations.sh) so the raised amount can change without
@@ -718,6 +725,14 @@
     paypal.rel = "noopener noreferrer";
     paypal.textContent = "Donate with PayPal";
     container.appendChild(paypal);
+
+    var monzo = document.createElement("a");
+    monzo.className = "btn btn-monzo";
+    monzo.href = MONZO_URL;
+    monzo.target = "_blank";
+    monzo.rel = "noopener noreferrer";
+    monzo.textContent = "Donate with Monzo";
+    container.appendChild(monzo);
 
     container.hidden = false;
   }

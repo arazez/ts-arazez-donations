@@ -14,10 +14,11 @@ var TIMEZONE = "Europe/London";
 
 var REVOLUT_URL = "https://revolut.me/amjedlwa";
 var PAYPAL_URL = "https://paypal.me/arazez";
+var MONZO_URL = "https://monzo.me/amjedagabani";
 ```
 
 - The window can cross a year boundary fine (e.g. opening 15 December for 31 days runs into mid-January) — the JS checks both the previous year's and current year's window.
-- Change `REVOLUT_URL` / `PAYPAL_URL` if your payment links ever change.
+- Change `REVOLUT_URL` / `PAYPAL_URL` / `MONZO_URL` if your payment links ever change.
 
 ### 2. Donation total, goal, rules, and donor list — `donations.json`
 
