@@ -711,7 +711,18 @@
     if (preview === "goal") return "goal";
 
     if (!isOpen(now, win)) return "closed";
-    if (donationsData.closeWhenGoalReached && donationsData.raised >= donationsData.goal) return "goal";
+
+    // Guard against a stale "raised" left over from the last window: only
+    // let goal-reached fire if donations.json was actually touched on or
+    // after this window's open date. If it hasn't been (e.g. you forgot to
+    // reset raised before re-opening), fail safe toward "open" rather than
+    // silently hiding the donate buttons on day one of the new window.
+    var confirmedForThisWindow = donationsData.lastUpdated &&
+      parseDateOnly(donationsData.lastUpdated) >= win.opensAt;
+
+    if (donationsData.closeWhenGoalReached && donationsData.raised >= donationsData.goal && confirmedForThisWindow) {
+      return "goal";
+    }
     return "open";
   }
 
