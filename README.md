@@ -29,6 +29,7 @@ var MONZO_URL = "https://monzo.me/amjedagabani";
   "currency": "GBP",
   "closeWhenGoalReached": true,
   "adminMinimum": 3,
+  "muteMinimum": 5,
   "maxPerPerson": 5,
   "lastUpdated": "2026-09-19",
   "donors": [
@@ -40,14 +41,36 @@ var MONZO_URL = "https://monzo.me/amjedagabani";
 
 This one file now drives the progress bar, the donation rules note, and the donor list in "Thank you" — the donor `<ul>` in `index.html` is empty and gets filled in by JS from `donors` on load.
 
-- `goal` / `raised` drive the progress bar shown under "Where your money goes".
+- `goal` / `raised` drive the progress bar in the header, above the donate buttons.
 - `raised` starts each year at `3` (not `0`) to account for the owner's own automatic £3/yr contribution to the server. When you reset the total at the start of a new donation window, reset it to `3`, not `0`.
 - `closeWhenGoalReached` (`true`/`false`): when `true` and `raised >= goal`, the page treats donations as closed even if the yearly window is still open — the Revolut/PayPal buttons are hidden and the banner shows "🎉 Goal reached, thank you!" with the final total instead. Set to `false` if you'd rather keep accepting donations past the goal.
-- `adminMinimum`: the donation amount that qualifies someone for admin. Shown in the rules note under the donate buttons and in the "Thank you" intro text (both auto-formatted with `currency`).
-- `maxPerPerson`: the donation cap per person, shown as "Max £X per person so everyone gets a fair shot." in that same rules note.
+- `adminMinimum`: the donation amount that qualifies someone for admin. Sets the amount on the admin card in "What you get" and in the "Thank you" intro text (auto-formatted with `currency`).
+- `muteMinimum`: the donation amount that unlocks the 1-hour mute redemption (once every 6 months, non-rolling). Together with `adminMinimum` it sets the amounts on the unlock cards in the "What you get" section, which is shown only while donations are open. Banner/modal control is a fixed 1 week per £1 (the rate strip above the cards).
+- `maxPerPerson`: the donation cap per person, shown under the donate buttons as "Please donate £X maximum per person. Anything over £X will be refunded."
 - `donors`: array of `{ "name": "...", "level": "..." }`. `level` is optional, hand-written free text (e.g. `"Full Admin"`, `"Admin"`, `"Trial Admin"`) shown as a badge next to their name in "Thank you" — you decide it per donor, it isn't auto-computed from `adminMinimum`. Leave it out entirely for a donor who wasn't given admin. No donation amounts are stored or shown per donor, only whether they donated and what level (if any) they were given.
 - `lastUpdated` (`"YYYY-MM-DD"`): shown as "Totals last updated [date]." under the progress bar, so donors can tell the total isn't stale. `update-donations.sh` bumps this to today automatically on every run — you shouldn't need to touch it by hand.
 - Easiest way to update `raised` and `donors`: run `./update-donations.sh` (see below) rather than hand-editing the JSON, though editing it directly works too.
+
+### 2b. Perks remaining — `perks.json`
+
+Feeds the perk tags on each donor card in "Thank you" (weeks of banner/modal control left, and whether their 1-hour mute is ready). Names are matched to `donors` in `donations.json` (case-insensitive); a name that isn't in the donor list still gets its own card. Kept separate from `donations.json` so a TeamSpeak bot can own it, or you can edit it by hand. While `perks` is empty, no tags are shown.
+
+```json
+{
+  "lastUpdated": "2026-09-21",
+  "perks": {
+    "SomeDonor": { "banner": 5, "modal": 5, "mute": true },
+    "AnotherDonor": { "banner": 3, "modal": 1, "mute": "2027-03-15" }
+  }
+}
+```
+
+- `banner` / `modal`: whole weeks of control still to redeem. Omit or set `0` once used up.
+- `mute`: `true` = ready to use now; a `"YYYY-MM-DD"` date = already used, shown as "Mute back [date]" and flips to ready by itself on that day; omit it if they don't have one.
+- A person with an entry but nothing left shows "All perks used"; a donor with no entry shows no tags.
+- `lastUpdated` is shown as "Perks last updated [date]." Update it whenever you (or the bot) change the file.
+- The file is fetched from `PERKS_FILE` at the top of the script in `index.html`. To connect a bot later, either have it commit to this file, or point `PERKS_FILE` at a URL it serves (same JSON shape, CORS enabled). No other site changes needed.
+- Note: weeks left hints at how much someone donated (the page otherwise never shows amounts). Leave a name out if they'd rather it wasn't visible.
 
 ### 3. Server name and contact links — in the HTML body of `index.html`
 
@@ -57,9 +80,9 @@ This one file now drives the progress bar, the donation rules note, and the dono
 
 ### Section visibility by state
 
-- **Open**: banner, buttons, admin/max-donation rules note, "Where your money goes" (with progress bar), "Thank you" (donor list, 🛡️ level badge on donors who have one).
-- **Goal reached**: same as open minus the buttons/rules note; "Where your money goes" still shows to display the final total.
-- **Closed**: banner only (no buttons, no rules note) — "Where your money goes" is hidden entirely (no stale progress bar), leaving just "Thank you".
+- **Open**: banner, buttons, max-donation note, "What you get" (per-£1 rate strip + unlock cards), "Thank you" (donor cards, 🛡️ level badge on donors who have one, plus perk tags for anyone in `perks.json`). The progress bar lives in the header.
+- **Goal reached**: same as open minus the buttons/rules note; the header progress bar still shows the final total.
+- **Closed**: banner only (no buttons, no rules note) — the header progress bar and "What you get" are hidden (no stale total), leaving just "Thank you".
 
 ### Updating totals and donors: `update-donations.sh`
 
@@ -86,11 +109,12 @@ npx serve .
 python3 -m http.server 8000
 ```
 
-Then open the page with a query string override so you don't have to wait for the real date or edit `donations.json`:
+Then open the page with a query string override so you don't have to wait for the real date or edit `donations.json`. These only work locally (`file://` or `localhost`/`127.0.0.1`); on the live site they're ignored, so a shared link can't force the donate buttons on while donations are closed.
 
 - `?preview=open` — forces the OPEN state (buttons + "closes in" countdown), using the real `donations.json` totals for the progress bar
 - `?preview=closed` — forces the CLOSED state (no buttons, "opens in" countdown)
 - `?preview=goal` — forces the GOAL REACHED state (no buttons, "🎉 Goal reached" banner, progress bar shown full)
+- `?demo=perks` — adds made-up people with perk tags to the "Thank you" list, so you can preview it without editing `perks.json` (combine with `&preview=open` etc.)
 
 No override = real date/time logic based on `TIMEZONE`, combined with the real `donations.json` totals.
 

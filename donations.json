@@ -4,6 +4,7 @@
   "currency": "GBP",
   "closeWhenGoalReached": true,
   "adminMinimum": 3,
+  "muteMinimum": 5,
   "maxPerPerson": 5,
   "lastUpdated": "2026-09-19",
   "donors": [

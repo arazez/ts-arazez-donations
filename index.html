@@ -158,10 +158,12 @@
 
   .perk-note {
     color: var(--text-dim);
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin: 1.25rem auto 1.75rem;
     max-width: 46ch;
   }
+
+  .perk-note strong { color: var(--orange); }
 
   /* Buttons */
   .btn-row {
@@ -275,30 +277,18 @@
     transition: width 0.4s ease;
   }
 
+  .hero-progress {
+    max-width: 560px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .hero-progress .progress-label { justify-content: center; }
+  .hero-progress .updated-note { text-align: center; }
+
   .updated-note {
     margin: 0.6rem 0 0;
     font-size: 0.8rem;
     color: var(--text-dim);
-  }
-
-  ul.reasons {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  ul.reasons li {
-    display: flex;
-    gap: 0.7rem;
-    align-items: flex-start;
-  }
-
-  ul.reasons li::before {
-    content: "▸";
-    color: var(--orange);
-    flex-shrink: 0;
   }
 
   .donors {
@@ -306,7 +296,7 @@
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 0.6rem;
   }
 
@@ -323,6 +313,213 @@
     font-size: 0.85rem;
     display: block;
   }
+
+  /* Perks: per-£1 rate strip + threshold unlock cards */
+  .perk-rate {
+    background: var(--orange-dim);
+    border: 1px solid var(--orange);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .perk-rate-lead {
+    margin: 0 0 0.75rem;
+    font-weight: 800;
+    font-size: 1.15rem;
+  }
+
+  .perk-rate-lead .rate-amt { color: var(--orange); }
+
+  ul.perk-rate-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  ul.perk-rate-list li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .perk-icon {
+    font-size: 1.4rem;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+
+  /* Tooltips anchor to this, so they can't run off the right edge mid-line */
+  .perk-rate-text {
+    position: relative;
+    display: block;
+    min-width: 0;
+  }
+
+  .perk-rate-text strong { font-weight: 600; }
+
+  .perk-rules-head {
+    margin: 1rem 0 0.4rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--orange-dim);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  ul.perk-rules {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+  }
+
+  ul.perk-rules li {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  ul.perk-rules li::before {
+    content: "✓";
+    color: var(--green);
+    flex-shrink: 0;
+  }
+
+  .perk-unlocks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .unlock-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.15rem;
+  }
+
+  .unlock-amount {
+    display: block;
+    color: var(--orange);
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .unlock-title {
+    display: block;
+    margin-top: 0.3rem;
+    font-weight: 600;
+  }
+
+  .unlock-detail {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  /* Hover / focus / tap explainer */
+  .help {
+    display: inline-block;
+    margin-top: 0.2rem;
+  }
+
+  .help-trigger {
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--orange);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: help;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+  }
+
+  .help-trigger:hover { color: var(--orange-hover); }
+
+  .help-tip {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    margin-top: 0.4rem;
+    width: min(18rem, calc(100vw - 5.5rem));
+    background: var(--bg);
+    border: 1px solid var(--orange);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    box-shadow: 0 8px 24px #000a;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--text);
+  }
+
+  /* Bridges the gap so the tip doesn't vanish while the pointer crosses it */
+  .help-tip::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    top: -0.5rem;
+    height: 0.5rem;
+  }
+
+  .help:hover .help-tip,
+  .help-trigger:focus-visible + .help-tip,
+  .help.open .help-tip { display: block; }
+
+  .perks-foot {
+    margin: 0.9rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  /* Remaining-perk pills inside a donor card */
+  .pl-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+  }
+
+  .pl-chip {
+    font-size: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+  }
+
+  .pl-chip.weeks {
+    border-color: var(--orange);
+    background: var(--orange-dim);
+  }
+
+  .pl-chip.ready {
+    border-color: var(--green);
+    background: #3ddc8414;
+    color: var(--green);
+  }
+
+  .pl-chip.wait { color: var(--text-dim); }
+
+  .pl-none {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .updated-note:empty { display: none; }
 
   .contact-section {
     text-align: center;
@@ -396,13 +593,25 @@
     <h1>Mandem Server</h1>
     <p class="subtitle">
       Help keep <code class="addr">ts.arazez.com</code> online for another year.
-      Every donation goes straight toward hosting costs and upkeep.
+      Covers hosting, backups and security updates. No profit: 100% of
+      donations go to server costs.
     </p>
 
     <!-- Status banner: filled in by JS -->
     <div id="statusBanner" class="banner" role="status" aria-live="polite">
       <p class="banner-title" id="bannerTitle">Checking donation window…</p>
       <p class="countdown" id="bannerCountdown"></p>
+    </div>
+
+    <!-- Compact copy of the progress bar, so the total is visible next to the donate buttons -->
+    <div class="progress-wrap hero-progress" id="heroProgress" hidden>
+      <div class="progress-label">
+        <span><span class="raised">£0</span> raised of <span class="goal-amt">£30</span> goal</span>
+      </div>
+      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30" aria-label="Donation progress toward yearly goal">
+        <div class="progress-fill" style="width:0%"></div>
+      </div>
+      <p class="updated-note"></p>
     </div>
 
     <!-- Payment buttons: only inserted into the DOM when the window is OPEN -->
@@ -420,34 +629,24 @@
 
 <main class="wrap">
 
-  <!-- Hidden entirely while donations are closed: only relevant while collecting -->
-  <section aria-labelledby="goal-heading" id="moneyGoesSection">
-    <h2 id="goal-heading">Where your money goes</h2>
+  <!-- Only shown while donations are open: what each donation level gets you -->
+  <section aria-labelledby="perks-heading" id="perksSection" hidden>
+    <h2 id="perks-heading">What you get</h2>
     <div class="card">
-      <div class="progress-wrap">
-        <div class="progress-label">
-          <span><span class="raised" id="raisedLabel">£0</span> raised of <span id="goalLabel">£30</span> goal</span>
-        </div>
-        <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30" aria-label="Donation progress toward yearly goal">
-          <div class="progress-fill" id="progressFill" style="width:0%"></div>
-        </div>
-        <p class="updated-note" id="updatedNote"></p>
-      </div>
-      <ul class="reasons">
-        <li>Covers the server rental for a full year of TeamSpeak hosting.</li>
-        <li>Keeps voice channels, permissions and server settings backed up and maintained.</li>
-        <li>Ensures server security is kept up to date and maintained.</li>
-        <li>No profit. 100% of donations go toward server costs.</li>
-      </ul>
+      <div class="perk-rate" id="perkRate"></div>
+      <div class="perk-unlocks" id="perkUnlocks"></div>
+      <p class="perks-foot" id="perksFoot"></p>
     </div>
   </section>
 
+  <!-- Hidden entirely while donations are closed: only relevant while collecting -->
   <section aria-labelledby="thanks-heading">
     <h2 id="thanks-heading">Thank you 🧡</h2>
     <div class="card">
       <!-- Filled in by JS from donations.json's "donors" array -->
       <p id="thanksIntro">Massive thanks to everyone who's chipped in to keep the server running.</p>
       <ul class="donors" id="donorList"></ul>
+      <p class="updated-note" id="perksLeftUpdated"></p>
     </div>
   </section>
 
@@ -491,6 +690,11 @@
   // touching this file.
   var DONATIONS_FILE = "donations.json";
 
+  // Remaining perks per donor. Kept separate from donations.json so a bot
+  // (or you, by hand) can own it. Point this at a bot-served URL later if
+  // you like; the JSON shape stays the same (see README).
+  var PERKS_FILE = "perks.json";
+
   // Used if donations.json can't be loaded (e.g. missing, or opening this
   // file directly as file:// without a local server — fetch() needs http(s)).
   // Kept roughly in sync with donations.json so a direct file:// open still
@@ -501,11 +705,20 @@
     currency: "GBP",
     closeWhenGoalReached: true,
     adminMinimum: 3,
+    muteMinimum: 5,
     maxPerPerson: 5,
     lastUpdated: "2026-09-19", // YYYY-MM-DD, shown as "Totals last updated ..."
     donors: [
-      { name: "Amjed", level: "Full Admin" },
-      { name: "Anonymous", level: "Admin" }
+      { name: "arazez", level: "Owner" },
+      { name: "faux", level: "Super Admin" },
+      { name: "RaadehTTV", level: "Super Admin" },
+      { name: "Zoopi", level: "Super Admin" },
+      { name: "ghaith97", level: "Super Admin" },
+      { name: "Jawad", level: "Admin" },
+      { name: "judas", level: "Admin" },
+      { name: "Fizzy", level: "Admin" },
+      { name: "hashithefourth", level: "Admin" },
+      { name: "CheapMarlin", level: "Admin" }
     ]
   };
 
@@ -609,11 +822,23 @@
     return out.join(" ");
   }
 
-  // --- URL preview override for local testing --------------------------------
-  // Append ?preview=open, ?preview=closed or ?preview=goal to force a state.
+  // --- URL overrides for local testing ---------------------------------------
+  // ?preview=open|closed|goal forces a state, ?demo=perks adds sample perks.
+  // Local only (file:// or localhost): on the live site they're ignored, so a
+  // shared link can't put donate buttons up while donations are closed.
+  function isLocal() {
+    var h = window.location.hostname;
+    return window.location.protocol === "file:" ||
+      h === "localhost" || h === "127.0.0.1" || h === "[::1]";
+  }
+
+  function getQueryParam(name) {
+    if (!isLocal()) return null;
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
   function getPreviewOverride() {
-    var params = new URLSearchParams(window.location.search);
-    var val = params.get("preview");
+    var val = getQueryParam("preview");
     if (val === "open" || val === "closed" || val === "goal") return val;
     return null;
   }
@@ -640,6 +865,7 @@
           currency: data.currency || DEFAULT_DONATIONS.currency,
           closeWhenGoalReached: typeof data.closeWhenGoalReached === "boolean" ? data.closeWhenGoalReached : DEFAULT_DONATIONS.closeWhenGoalReached,
           adminMinimum: typeof data.adminMinimum === "number" ? data.adminMinimum : DEFAULT_DONATIONS.adminMinimum,
+          muteMinimum: typeof data.muteMinimum === "number" ? data.muteMinimum : DEFAULT_DONATIONS.muteMinimum,
           maxPerPerson: typeof data.maxPerPerson === "number" ? data.maxPerPerson : DEFAULT_DONATIONS.maxPerPerson,
           lastUpdated: data.lastUpdated || DEFAULT_DONATIONS.lastUpdated,
           donors: Array.isArray(data.donors) ? data.donors : DEFAULT_DONATIONS.donors
@@ -655,50 +881,321 @@
       });
   }
 
-  function renderProgress(data) {
-    var raisedLabel = document.getElementById("raisedLabel");
-    var goalLabel = document.getElementById("goalLabel");
-    var progressBar = document.getElementById("progressBar");
-    var progressFill = document.getElementById("progressFill");
-    var updatedNote = document.getElementById("updatedNote");
-
+  // Fills the progress bar inside `root` (the hero's).
+  function renderProgress(data, root) {
     var goal = data.goal;
     var raised = data.raised;
     var pct = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
 
-    raisedLabel.textContent = formatMoney(raised, data.currency);
-    goalLabel.textContent = formatMoney(goal, data.currency);
-    progressFill.style.width = pct + "%";
-    progressBar.setAttribute("aria-valuenow", raised);
-    progressBar.setAttribute("aria-valuemax", goal);
-    updatedNote.textContent = data.lastUpdated
+    root.querySelector(".raised").textContent = formatMoney(raised, data.currency);
+    root.querySelector(".goal-amt").textContent = formatMoney(goal, data.currency);
+    root.querySelector(".progress-fill").style.width = pct + "%";
+    var bar = root.querySelector(".progress-bar");
+    bar.setAttribute("aria-valuenow", raised);
+    bar.setAttribute("aria-valuemax", goal);
+    root.querySelector(".updated-note").textContent = data.lastUpdated
       ? "Totals last updated " + formatDate(parseDateOnly(data.lastUpdated)) + "."
       : "";
   }
 
   // --- Donor list (built once from donations.json's "donors" array) -----
+  // Each donor card also shows any perks they still have to redeem, matched
+  // by name (case-insensitive) against perks.json. Names in perks.json that
+  // aren't in the donor list still get a card, so nothing is silently hidden.
   function renderDonors() {
     var thanksIntro = document.getElementById("thanksIntro");
     var donorList = document.getElementById("donorList");
+    var perksUpdated = document.getElementById("perksLeftUpdated");
     var minimum = formatMoney(donationsData.adminMinimum, donationsData.currency);
+
+    var perksByName = {};
+    Object.keys(perksData.perks).forEach(function (name) {
+      perksByName[name.toLowerCase()] = { name: name, perks: perksData.perks[name] || {} };
+    });
+    var hasPerks = Object.keys(perksByName).length > 0;
 
     thanksIntro.textContent =
       "Massive thanks to everyone who's chipped in to keep the server running. " +
-      "Donors of " + minimum + "+ are gifted server admin, the level at the owner's discretion.";
+      "Donors of " + minimum + "+ are gifted server admin, the level at the owner's discretion." +
+      (hasPerks ? " Tags under a name are perks they still have to redeem." : "");
+
+    var cards = donationsData.donors.map(function (donor) {
+      var key = String(donor.name).toLowerCase();
+      var entry = perksByName[key];
+      delete perksByName[key];
+      return { name: donor.name, level: donor.level, perks: entry ? entry.perks : null };
+    });
+    Object.keys(perksByName).forEach(function (key) {
+      cards.push({ name: perksByName[key].name, level: null, perks: perksByName[key].perks });
+    });
 
     donorList.innerHTML = "";
-    donationsData.donors.forEach(function (donor) {
+    cards.forEach(function (card) {
       var li = document.createElement("li");
-      li.textContent = donor.name;
-      if (donor.level) {
+      li.textContent = card.name;
+      if (card.level) {
         var badge = document.createElement("span");
         badge.className = "amt";
-        badge.textContent = "🛡️ " + donor.level;
+        badge.textContent = "🛡️ " + card.level;
         li.appendChild(document.createTextNode(" "));
         li.appendChild(badge);
       }
+      if (card.perks) li.appendChild(perkPills(card.perks));
       donorList.appendChild(li);
     });
+
+    perksUpdated.textContent = hasPerks && perksData.lastUpdated
+      ? "Perks last updated " + formatDateShort(parseDateOnly(perksData.lastUpdated)) + "."
+      : "";
+  }
+
+  // --- Perks (built from donations.json's thresholds) -------------------
+  // Two kinds of perk, shown differently on purpose: banner/modal control
+  // scales with every £1 (rate strip), while admin and mute unlock at a
+  // threshold (cards).
+  var helpCount = 0;
+
+  function buildHelp(help) {
+    // Hover / keyboard-focus / tap explainer. The visible "What's a …?"
+    // text is the call to action, so people know there's more to see.
+    var tipId = "perk-tip-" + (helpCount++);
+    var wrap = document.createElement("span");
+    wrap.className = "help";
+
+    var trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "help-trigger";
+    trigger.setAttribute("aria-describedby", tipId);
+    trigger.textContent = "ⓘ " + help.cta;
+
+    var tip = document.createElement("span");
+    tip.className = "help-tip";
+    tip.id = tipId;
+    tip.setAttribute("role", "tooltip");
+    tip.textContent = help.text;
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(tip);
+    return wrap;
+  }
+
+  function renderPerks() {
+    var rate = document.getElementById("perkRate");
+    var unlocks = document.getElementById("perkUnlocks");
+    var foot = document.getElementById("perksFoot");
+    var cur = donationsData.currency;
+
+    var ratePerks = [
+      {
+        icon: "🖼️",
+        text: "1 week of control over the TeamSpeak banner photo",
+        help: {
+          cta: "What's the banner?",
+          text: "The banner is the image shown on the right in the channel details page, visible to everyone on the server. You pick the photo."
+        }
+      },
+      {
+        icon: "💬",
+        text: "1 week of control over the TeamSpeak modal",
+        help: {
+          cta: "What's a modal?",
+          text: "A modal is the pop-up message box that appears in the middle of everyone's screen when they connect to the server. They have to dismiss it before carrying on. You choose what it says."
+        }
+      }
+    ];
+
+    function unlockAmount(amt) {
+      return formatMoney(amt, cur) + (amt < donationsData.maxPerPerson ? "+" : "");
+    }
+
+    var unlockPerks = [
+      {
+        amount: donationsData.adminMinimum,
+        title: "🛡️ Server admin",
+        detail: "Level at the owner's discretion"
+      },
+      {
+        amount: donationsData.muteMinimum,
+        title: "🔇 1-hour mute on any user",
+        detail: "Once every 6 months. Non-rolling, so unused ones don't carry over"
+      }
+    ];
+
+    // Rate strip
+    rate.innerHTML = "";
+    var lead = document.createElement("p");
+    lead.className = "perk-rate-lead";
+    lead.appendChild(document.createTextNode("Every "));
+    var leadAmt = document.createElement("span");
+    leadAmt.className = "rate-amt";
+    leadAmt.textContent = formatMoney(1, cur);
+    lead.appendChild(leadAmt);
+    lead.appendChild(document.createTextNode(" you donate gets you"));
+    rate.appendChild(lead);
+
+    var list = document.createElement("ul");
+    list.className = "perk-rate-list";
+    ratePerks.forEach(function (perk) {
+      var li = document.createElement("li");
+      var icon = document.createElement("span");
+      icon.className = "perk-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = perk.icon;
+      var body = document.createElement("span");
+      body.className = "perk-rate-text";
+      var label = document.createElement("strong");
+      label.textContent = perk.text;
+      body.appendChild(label);
+      body.appendChild(document.createElement("br"));
+      body.appendChild(buildHelp(perk.help));
+      li.appendChild(icon);
+      li.appendChild(body);
+      list.appendChild(li);
+    });
+    rate.appendChild(list);
+
+    // Ground rules for banner/modal weeks, kept next to the perk they govern
+    var rules = [
+      "Once your week starts, nobody can interrupt it.",
+      "It can't be paused or resumed: it runs for the full week, then ends.",
+      "Banner and modal are separate, so you can use each one on its own."
+    ];
+    var rulesHead = document.createElement("p");
+    rulesHead.className = "perk-rules-head";
+    rulesHead.textContent = "How it works";
+    rate.appendChild(rulesHead);
+    var rulesList = document.createElement("ul");
+    rulesList.className = "perk-rules";
+    rules.forEach(function (text) {
+      var li = document.createElement("li");
+      li.textContent = text;
+      rulesList.appendChild(li);
+    });
+    rate.appendChild(rulesList);
+
+    // Unlock cards
+    unlocks.innerHTML = "";
+    unlockPerks.forEach(function (perk) {
+      var card = document.createElement("div");
+      card.className = "unlock-card";
+      var amt = document.createElement("span");
+      amt.className = "unlock-amount";
+      amt.textContent = unlockAmount(perk.amount);
+      var title = document.createElement("span");
+      title.className = "unlock-title";
+      title.textContent = perk.title;
+      var detail = document.createElement("span");
+      detail.className = "unlock-detail";
+      detail.textContent = perk.detail;
+      card.appendChild(amt);
+      card.appendChild(title);
+      card.appendChild(detail);
+      unlocks.appendChild(card);
+    });
+
+    // Touch devices have no hover, so tapping the trigger toggles the tip;
+    // tapping anywhere else, or pressing Escape, closes it.
+    function closeHelp(except) {
+      Array.prototype.forEach.call(rate.querySelectorAll(".help.open"), function (el) {
+        if (el !== except) el.classList.remove("open");
+      });
+    }
+    rate.addEventListener("click", function (e) {
+      var trigger = e.target.closest && e.target.closest(".help-trigger");
+      if (!trigger) return;
+      var help = trigger.parentNode;
+      closeHelp(help);
+      help.classList.toggle("open");
+      e.stopPropagation();
+    });
+    document.addEventListener("click", function () { closeHelp(null); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeHelp(null);
+    });
+
+    foot.textContent =
+      "Perks stack: the unlocks come on top of your banner and modal weeks.";
+  }
+
+  // --- Perks remaining (from perks.json) ----------------------------------
+  // { lastUpdated, perks: { "Name": { banner: <weeks>, modal: <weeks>, mute: true | "YYYY-MM-DD" } } }
+  // mute: true = ready now; a date = used, available again from that day.
+  // Omit a key (or use 0 / false) for a perk they have none of left.
+  var perksData = { lastUpdated: null, perks: {} };
+
+  // ?demo=perks shows made-up people so the section can be previewed before
+  // any real data exists (and without touching perks.json).
+  var DEMO_PERKS = {
+    lastUpdated: "2026-09-21",
+    perks: {
+      "ExampleUser": { banner: 5, modal: 5, mute: true },
+      "AnotherDonor": { banner: 3, modal: 1, mute: "2027-03-15" },
+      "MuteOnly": { mute: true },
+      "AllUsed": { banner: 0, modal: 0 }
+    }
+  };
+
+  function loadPerks() {
+    if (getQueryParam("demo") === "perks") {
+      perksData = DEMO_PERKS;
+      return Promise.resolve();
+    }
+    return fetch(PERKS_FILE, { cache: "no-store" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        perksData = {
+          lastUpdated: data.lastUpdated || null,
+          perks: data.perks && typeof data.perks === "object" ? data.perks : {}
+        };
+      })
+      .catch(function (err) {
+        console.info("No " + PERKS_FILE + " loaded, hiding perks remaining.", err);
+        perksData = { lastUpdated: null, perks: {} };
+      });
+  }
+
+  function weeksLabel(n) { return n + (n === 1 ? " wk" : " wks"); }
+
+  function formatDateShort(date) {
+    return new Intl.DateTimeFormat("en-GB", {
+      timeZone: "UTC",
+      day: "numeric", month: "short", year: "numeric"
+    }).format(date);
+  }
+
+  // Pills for what a person still has left, or "All perks used".
+  function perkPills(p) {
+    var today = nowInTimeZone(TIMEZONE);
+    var chips = document.createElement("span");
+    chips.className = "pl-chips";
+
+    function chip(cls, text) {
+      var el = document.createElement("span");
+      el.className = "pl-chip " + cls;
+      el.textContent = text;
+      chips.appendChild(el);
+    }
+
+    if (p.banner > 0) chip("weeks", "🖼️ Banner · " + weeksLabel(p.banner));
+    if (p.modal > 0) chip("weeks", "💬 Modal · " + weeksLabel(p.modal));
+
+    if (p.mute === true) {
+      chip("ready", "🔇 Mute ready");
+    } else if (typeof p.mute === "string") {
+      var back = parseDateOnly(p.mute);
+      if (back <= today) chip("ready", "🔇 Mute ready");
+      else chip("wait", "🔇 Mute back " + formatDateShort(back));
+    }
+
+    if (chips.children.length) return chips;
+
+    var none = document.createElement("span");
+    none.className = "pl-none";
+    none.textContent = "All perks used";
+    return none;
   }
 
   // --- Combine the date window with the donation total to get one state --
@@ -781,12 +1278,11 @@
     var countdownEl = document.getElementById("bannerCountdown");
     var paymentButtons = document.getElementById("paymentButtons");
     var perkNote = document.getElementById("perkNote");
-    var moneyGoesSection = document.getElementById("moneyGoesSection");
+    var perksSection = document.getElementById("perksSection");
+    var heroProgress = document.getElementById("heroProgress");
 
-    // "Where your money goes" (progress bar included) is only relevant
-    // while donations are actually being collected — hide it entirely
-    // once the window is closed, rather than showing a stale total.
-    moneyGoesSection.hidden = (state === "closed");
+    // Perks only matter while people can actually donate.
+    perksSection.hidden = (state !== "open");
 
     // ?preview=goal should look "goal reached" even if donations.json's
     // real raised total hasn't caught up yet — simulate it for display.
@@ -799,8 +1295,9 @@
         lastUpdated: donationsData.lastUpdated
       };
     }
+    heroProgress.hidden = (state === "closed");
     if (state !== "closed") {
-      renderProgress(display);
+      renderProgress(display, heroProgress);
     }
 
     if (state === "open") {
@@ -810,10 +1307,10 @@
       countdownEl.innerHTML = "Closes in <strong>" + formatCountdown(closesAt - now) + "</strong>";
       renderPaymentButtons(paymentButtons);
       perkNote.innerHTML =
-        "🛡️ Donate " + formatMoney(donationsData.adminMinimum, donationsData.currency) +
-        "+ to be gifted server admin, the level at the owner's discretion. Max " +
+        "Please donate <strong>" + formatMoney(donationsData.maxPerPerson, donationsData.currency) +
+        " maximum</strong> per person. Anything over " +
         formatMoney(donationsData.maxPerPerson, donationsData.currency) +
-        " per person so everyone gets a fair shot.";
+        " will be refunded.";
       perkNote.hidden = false;
     } else if (state === "goal") {
       banner.className = "banner goal";
@@ -833,8 +1330,9 @@
     }
   }
 
-  loadDonations().then(function () {
+  Promise.all([loadDonations(), loadPerks()]).then(function () {
     renderDonors();
+    renderPerks();
     render();
     setInterval(render, 1000);
   });
